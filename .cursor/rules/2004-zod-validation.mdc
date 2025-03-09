@@ -1,0 +1,80 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+ ---
+description: ENFORCE Zod schema validation standards and type safety
+globs: src/**/*.{ts,tsx}
+---
+
+# Zod Validation Standards
+
+## Context
+- Applied to all form validations and data schemas
+- Ensures type-safe data validation
+
+## Requirements
+- Define clear validation schemas
+- Use Zod with react-hook-form
+- Implement proper error messages
+- Use TypeScript inference from schemas
+- Handle all edge cases
+- Implement proper coercion when needed
+- Use proper error handling
+- Follow consistent schema naming
+
+## Examples
+
+<example>
+```typescript
+// Good - Proper schema definition and type inference
+import { z } from 'zod'
+
+export const expenseSchema = z.object({
+  amount: z.number()
+    .positive('Amount must be positive')
+    .min(0.01, 'Minimum amount is 0.01'),
+  category: z.string()
+    .min(1, 'Category is required')
+    .max(50, 'Category name too long'),
+  date: z.date()
+    .min(new Date('2020-01-01'), 'Date too old')
+    .max(new Date(), 'Date cannot be in the future'),
+  notes: z.string()
+    .max(500, 'Notes too long')
+    .optional()
+})
+
+export type ExpenseFormData = z.infer<typeof expenseSchema>
+
+// Usage with react-hook-form
+export function ExpenseForm() {
+  const form = useForm<ExpenseFormData>({
+    resolver: zodResolver(expenseSchema),
+    defaultValues: {
+      amount: 0,
+      category: '',
+      date: new Date()
+    }
+  })
+}
+```
+</example>
+
+<example type="invalid">
+```typescript
+// Wrong - No proper validation or type safety
+const expenseSchema = {
+  amount: (value) => value > 0,
+  category: (value) => value.length > 0,
+  date: (value) => value instanceof Date
+}
+
+function validateExpense(data) {
+  return Object.keys(expenseSchema).every(key =>
+    expenseSchema[key](mdc:data[key])
+  )
+}
+```
+</example>

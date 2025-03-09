@@ -1,0 +1,92 @@
+---
+description: ENFORCE React component testing standards and best practices
+globs: src/**/*.test.{tsx,ts}
+---
+
+# React Component Testing Standards
+
+## Context
+- Applied to all React component tests
+- Ensures consistent testing patterns
+- Focuses on user behavior and accessibility
+
+## Requirements
+- Use React Testing Library
+- Test from user perspective
+- Test accessibility features
+- Mock API calls and external services
+- Test error boundaries
+- Test loading states
+- Use proper screen queries
+- Follow proper testing patterns
+
+## Examples
+
+<example>
+```typescript
+// Good - Testing user interactions and accessibility
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { ExpenseList } from './ExpenseList'
+
+describe('ExpenseList', () => {
+  it('should display loading state', () => {
+    render(<ExpenseList isLoading />)
+    expect(screen.getByRole('progressbar')).toBeInTheDocument()
+  })
+
+  it('should be accessible with keyboard navigation', async () => {
+    const user = userEvent.setup()
+    render(<ExpenseList expenses={mockExpenses} />)
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    await user.tab()
+    expect(deleteButton).toHaveFocus()
+  })
+
+  it('should handle empty state', () => {
+    render(<ExpenseList expenses={[]} />)
+    expect(screen.getByText(/no expenses found/i)).toBeInTheDocument()
+  })
+
+  it('should filter expenses by category', async () => {
+    const user = userEvent.setup()
+    render(<ExpenseList expenses={mockExpenses} />)
+
+    await user.selectOptions(
+      screen.getByLabelText(/filter by category/i),
+      'Food'
+    )
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(2)
+    expect(screen.getByText('Pizza')).toBeInTheDocument()
+  })
+})
+```
+</example>
+
+<example type="invalid">
+```typescript
+// Wrong - Testing implementation details
+test('ExpenseList internal state', () => {
+  const wrapper = shallow(<ExpenseList />)
+  expect(wrapper.state().expenses).toEqual([])
+  wrapper.instance().updateExpenses([])
+})
+```
+</example>
+
+## Testing Hierarchy
+```mermaid
+graph TD
+    A[Component Test] --> B[Render Test]
+    A --> C[Interaction Test]
+    A --> D[Accessibility Test]
+    B --> E[Initial State]
+    B --> F[Loading State]
+    B --> G[Error State]
+    C --> H[User Events]
+    C --> I[Form Submission]
+    D --> J[Keyboard Nav]
+    D --> K[ARIA Labels]
+``` 

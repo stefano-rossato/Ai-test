@@ -1,0 +1,76 @@
+---
+description: ENFORCE Chart.js visualization standards and best practices
+globs: src/components/**/*Chart*.tsx
+---
+
+# Chart.js Visualization Standards
+
+## Context
+- Applied to all data visualization components using Chart.js
+- Ensures consistent and accessible charts
+
+## Requirements
+- Use react-chartjs-2 for React integration
+- Implement responsive charts
+- Use consistent color schemes
+- Provide proper accessibility labels
+- Include proper tooltips and legends
+- Handle loading and error states
+- Implement proper data updates
+- Use appropriate chart types for data
+
+## Examples
+
+<example>
+```tsx
+// Good - Proper chart setup with accessibility
+import { Line } from 'react-chartjs-2'
+import { Chart as ChartJS } from 'chart.js/auto'
+
+export function ExpenseChart({ data }) {
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+        labels: {
+          font: {
+            size: 14
+          }
+        }
+      },
+      tooltip: {
+        enabled: true,
+        mode: 'index',
+        intersect: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Amount ($)'
+        }
+      }
+    }
+  }
+
+  return (
+    <div aria-label="Monthly expenses chart" role="img">
+      <Line data={data} options={options} />
+    </div>
+  )
+}
+```
+</example>
+
+<example type="invalid">
+```tsx
+// Wrong - No accessibility or proper configuration
+export function ExpenseChart({ data }) {
+  return <Line data={data} />
+}
+```
+</example>

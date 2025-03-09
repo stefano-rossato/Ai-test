@@ -1,0 +1,59 @@
+---
+description: ENFORCE shadcn/ui component standards and styling conventions
+globs: src/components/**/*.tsx
+---
+
+# Shadcn UI Component Standards
+
+## Context
+- Applied to all UI components using shadcn/ui
+- Ensures consistent styling and component usage
+
+## Requirements
+- Use shadcn/ui components for all common UI elements
+- Follow component composition patterns
+- Maintain consistent theme configuration
+- Use cn utility for class merging
+- Implement proper variants using cva
+- Follow accessibility guidelines
+- Use proper form components with react-hook-form
+
+## Examples
+
+<example>
+```tsx
+// Good - Proper component composition and styling
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+
+interface ExpenseButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "default" | "destructive"
+}
+
+export function ExpenseButton({ className, variant = "default", ...props }: ExpenseButtonProps) {
+  return (
+    <Button
+      className={cn("font-semibold", className)}
+      variant={variant}
+      {...props}
+    />
+  )
+}
+```
+</example>
+
+<example type="invalid">
+```tsx
+// Wrong - Direct HTML elements without shadcn components
+export function ExpenseButton() {
+  return (
+    <button
+      className="px-4 py-2 bg-blue-500 text-white"
+      style={{ borderRadius: '4px' }}
+    >
+      Add Expense
+    </button>
+  )
+}
+```
+</example>

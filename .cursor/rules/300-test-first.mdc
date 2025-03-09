@@ -1,0 +1,79 @@
+---
+description: ENFORCE test-first development by requiring test files before implementation
+globs: src/**/*.test.{ts,tsx}
+---
+
+# Test-First Development Standards
+
+## Context
+- Applied to all new feature development
+- Ensures test coverage and proper design
+- Follows Test-Driven Development (TDD) principles
+
+## Requirements
+- Create test file before implementation file
+- Follow Red-Green-Refactor cycle
+- Test file must exist for each component/function
+- Use descriptive test names
+- Test both success and error cases
+- Mock external dependencies
+- Group related tests with describe blocks
+- Use proper testing utilities
+
+## Examples
+
+<example>
+```typescript
+// Good - Comprehensive test suite before implementation
+// src/components/ExpenseForm.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { ExpenseForm } from './ExpenseForm'
+
+describe('ExpenseForm', () => {
+  it('should validate amount field', async () => {
+    render(<ExpenseForm />)
+
+    const amountInput = screen.getByLabelText('Amount')
+    fireEvent.change(amountInput, { target: { value: '-10' } })
+    fireEvent.blur(amountInput)
+
+    expect(await screen.findByText('Amount must be positive')).toBeInTheDocument()
+  })
+
+  it('should submit valid form data', async () => {
+    const onSubmit = jest.fn()
+    render(<ExpenseForm onSubmit={onSubmit} />)
+
+    fireEvent.change(screen.getByLabelText('Amount'), { target: { value: '50' } })
+    fireEvent.change(screen.getByLabelText('Category'), { target: { value: 'Food' } })
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }))
+
+    expect(onSubmit).toHaveBeenCalledWith({
+      amount: 50,
+      category: 'Food',
+      date: expect.any(Date)
+    })
+  })
+})
+```
+</example>
+
+<example type="invalid">
+```typescript
+// Wrong - Implementation without tests
+// src/components/ExpenseForm.tsx
+export function ExpenseForm() {
+  // Implementation without corresponding test file
+  return <form>...</form>
+}
+```
+</example>
+
+## Test File Structure
+```mermaid
+graph TD
+    A[Write Test] --> B[Red: Test Fails]
+    B --> C[Green: Implement Minimum]
+    C --> D[Refactor]
+    D --> A
+```

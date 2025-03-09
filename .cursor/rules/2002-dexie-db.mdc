@@ -1,0 +1,71 @@
+---
+description: ENFORCE Dexie.js database standards and local storage patterns
+globs: src/lib/db/**/*.ts
+---
+
+# Dexie.js Database Standards
+
+## Context
+- Applied to all IndexedDB operations using Dexie.js
+- Ensures consistent data storage and retrieval
+
+## Requirements
+- Define clear database schema
+- Use TypeScript interfaces for all models
+- Implement proper indexing for performance
+- Handle database versioning
+- Implement proper error handling
+- Use transactions for related operations
+- Implement backup/restore functionality
+- Follow proper CRUD patterns
+
+## Examples
+
+<example>
+```typescript
+// Good - Proper database setup and typing
+import Dexie, { Table } from 'dexie'
+
+interface Expense {
+  id?: number
+  amount: number
+  category: string
+  date: Date
+  notes?: string
+}
+
+export class ExpenseDB extends Dexie {
+  expenses!: Table<Expense>
+
+  constructor() {
+    super('ExpenseTracker')
+    this.version(1).stores({
+      expenses: '++id, category, date'
+    })
+  }
+
+  async addExpense(expense: Omit<Expense, 'id'>) {
+    try {
+      return await this.expenses.add(expense)
+    } catch (error) {
+      console.error('Failed to add expense:', error)
+      throw error
+    }
+  }
+}
+```
+</example>
+
+<example type="invalid">
+```typescript
+// Wrong - No proper typing or error handling
+const db = new Dexie('ExpenseTracker')
+db.version(1).stores({
+  expenses: '++id'
+})
+
+function addExpense(expense) {
+  db.expenses.add(expense)
+}
+```
+</example>

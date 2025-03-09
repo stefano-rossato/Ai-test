@@ -1,0 +1,62 @@
+---
+description: Ensures automatic Git commits for AI-generated changes following conventional commit format
+globs: "**/*"
+---
+
+# Git Auto Commit Rule
+
+## Context
+- Applies to all files modified by Cursor IDE's automatic changes
+- Ensures consistent commit history for AI-generated modifications
+- Implements conventional commit format standards
+- Maintains traceability between prompts and code changes
+
+## Requirements
+- All AI-modified files must be automatically committed
+- Commit messages must follow conventional commit format:
+  - Type (feat, fix, docs, style, refactor, test, chore)
+  - Optional scope in parentheses
+  - Clear description
+  - Detailed body explaining changes
+  - Original prompts must be referenced
+- Cursor IDE must:
+  - Track modified files
+  - Generate conventional commits
+  - Handle merge conflicts
+  - Execute git commands automatically
+
+## Examples
+
+### Valid Commit
+
+```git
+feat(ide): implement automatic code formatting
+
+- Added automatic formatting for Python files
+- Implemented consistent indentation rules
+- Added support for line length limits
+
+Changes were generated based on the following prompts:
+1. "Format the code according to PEP 8 standards"
+2. "Ensure consistent indentation across all files"
+```
+
+### Invalid Commit
+
+```git
+Updated some files
+
+- Made changes to formatting
+- Fixed some issues
+```
+
+### Commit Types Reference
+| Type     | Description           |
+|:---------|:---------------------|
+| feat     | New feature          |
+| fix      | Bug fix              |
+| docs     | Documentation        |
+| style    | Code style/formatting|
+| refactor | Code refactoring     |
+| test     | Testing changes      |
+| chore    | Maintenance tasks    |

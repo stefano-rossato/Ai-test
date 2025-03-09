@@ -1,0 +1,57 @@
+---
+description: ENFORCE Next.js 15 best practices when developing components and pages
+globs: src/**/*.{tsx,ts}
+---
+
+# Next.js 15 Development Standards
+
+## Context
+- Applied to all Next.js components and pages
+- Ensures consistent app structure and performance
+
+## Requirements
+- Use App Router for all routing
+- Implement server components by default
+- Use client components only when necessary (`use client` directive)
+- Follow Next.js 15 data fetching patterns
+- Implement proper metadata for SEO
+- Use Image component for all images
+- Implement proper error boundaries
+- Use loading states for async operations
+
+## Examples
+
+<example>
+```tsx
+// app/page.tsx
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Expense Tracker',
+  description: 'Track your monthly expenses and income'
+}
+
+export default async function HomePage() {
+  return (
+    <main className="container">
+      <h1>Dashboard</h1>
+      <Suspense fallback={<Loading />}>
+        <ExpensesList />
+      </Suspense>
+    </main>
+  )
+}
+```
+</example>
+
+<example type="invalid">
+```tsx
+// Wrong - Using old pages directory
+// pages/index.tsx
+export default function HomePage() {
+  useEffect(() => {
+    // Client-side data fetching when it could be server component
+  }, [])
+}
+```
+</example>
